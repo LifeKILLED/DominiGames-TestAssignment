@@ -1,6 +1,13 @@
 #include "Transform.h"
 #include "Entity.h"
+
+#define GLM_ENABLE_EXPERIMENTAL 1
+
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 namespace Scene {
     void Transform::SetEntity(EntityPtr entity) {
@@ -51,5 +58,24 @@ namespace Scene {
         }
 
         m_worldIsDirty = false;
+    }
+
+    void Transform::LookAt(const glm::vec3& target, const glm::vec3& up) {
+        glm::mat4 view = glm::lookAt(m_position, target, up);
+        glm::mat4 invView = glm::inverse(view);
+
+        glm::vec3 scale, translation, skew;
+        glm::vec4 perspective;
+        glm::quat rotationQuat;
+        glm::decompose(invView, scale, rotationQuat, translation, skew, perspective);
+
+        m_rotation = glm::degrees(glm::eulerAngles(rotationQuat));
+
+        MarkDirty();
+    }
+
+    glm::mat4 Transform::GetViewProjection(const glm::mat4& projection) const {
+        glm::mat4 view = glm::inverse(GetWorldMatrix());
+        return projection * view;
     }
 }

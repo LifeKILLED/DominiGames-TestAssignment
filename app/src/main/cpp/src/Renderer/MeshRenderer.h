@@ -10,9 +10,15 @@ namespace Renderer
     class MeshRenderer
     {
     public:
+        void Draw(const glm::mat4& transform);
+
+        void SetShader(std::shared_ptr<Shader> shader);
+        std::shared_ptr<Shader> GetShader();
+
+        void SetMesh(std::shared_ptr<Mesh> mesh);
+
+    private:
         std::shared_ptr<Shader> m_shader;
         std::shared_ptr<Mesh> m_mesh;
-
-        void Draw(const glm::mat4& transform);
     };
 }

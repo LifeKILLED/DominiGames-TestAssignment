@@ -15,14 +15,13 @@ namespace Scene
         void SetEntity(EntityPtr entity);
         EntityPtr GetEntity() const;
 
-        void SetPosition(const glm::vec3& pos) { m_position = pos; MarkDirty(); }
-        void SetRotation(const glm::vec3& rot) { m_rotation = rot; MarkDirty(); }
-        void SetScale(const glm::vec3& scl) { m_scale = scl; MarkDirty(); }
-
         const glm::mat4& GetWorldMatrix() const { UpdateWorldMatrix(); return m_worldMatrix; }
         const glm::mat4& GetLocalMatrix() const { UpdateLocalMatrix(); return m_localMatrix; }
 
         void MarkDirty(bool onlyWorldMatrix = false);
+
+        void LookAt(const glm::vec3& target, const glm::vec3& up = {0,1,0});
+        glm::mat4 GetViewProjection(const glm::mat4& projection) const;
 
     private:
         void UpdateLocalMatrix() const;
@@ -30,15 +29,16 @@ namespace Scene
 
     private:
         glm::vec3 m_position{0.0f};
-        glm::vec3 m_rotation{0.0f};
+        glm::vec3 m_rotation{0.0f}; // degrees
         glm::vec3 m_scale{1.0f};
-
-        mutable glm::mat4 m_localMatrix{1.0f};
-        mutable glm::mat4 m_worldMatrix{1.0f};
 
         mutable bool m_localIsDirty{true};
         mutable bool m_worldIsDirty{true};
 
+        mutable glm::mat4 m_localMatrix{1.0f};
+        mutable glm::mat4 m_worldMatrix{1.0f};
+
         std::weak_ptr<Entity> m_entity;
     };
-}
+
+} // namespace Scene

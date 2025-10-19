@@ -42,8 +42,8 @@ namespace Renderer {
             return;
         }
 
-        static constexpr auto TRANSFORM_UNIFORM_NAME = "transform";
-        m_transformId = glGetUniformLocation(m_id.value(), TRANSFORM_UNIFORM_NAME);
+        m_transformId = glGetUniformLocation(m_id.value(), "transform");
+        m_projectionId = glGetUniformLocation(m_id.value(), "projection");
     }
 
     void Shader::Unload() {

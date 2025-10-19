@@ -20,6 +20,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         src/Scene/Scene.cpp
         src/Scene/Entity.cpp
         src/Scene/Transform.cpp
+        src/Content/Loader.cpp
         ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
 )
 

@@ -27,6 +27,7 @@ namespace Renderer {
         std::optional<unsigned int> m_id;
 
         int m_transformId {};
+        int m_projectionId {};
     };
 
 } // namespace Renderer
