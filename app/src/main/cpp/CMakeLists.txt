@@ -14,8 +14,8 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         src/native-lib.cpp
         src/Renderer/Renderer.cpp
         src/Renderer/GLES/ContextGLES.cpp
-        src/Renderer/GLES/MeshGLES.cpp
-        src/Renderer/GLES/ShaderGLES.cpp
+        src/Renderer/GLES/Mesh.cpp
+        src/Renderer/GLES/Shader.cpp
         ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
 )
 

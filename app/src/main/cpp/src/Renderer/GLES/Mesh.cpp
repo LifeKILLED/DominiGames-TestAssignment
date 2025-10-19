@@ -1,15 +1,20 @@
-#include "MeshGLES.h"
+#include "Renderer/Mesh.h"
+
+#include <GLES2/gl2.h>
 
 namespace Renderer {
+    Mesh::~Mesh() {
+        Unload();
+    }
 
-    MeshGLES::MeshGLES() : m_vbo(0) {}
-
-    void MeshGLES::Load() {
-        if (m_vbo == 0) {
-            glGenBuffers(1, &m_vbo);
+    void Mesh::Load() {
+        if (!m_id.has_value()) {
+            GLuint buffer {};
+            glGenBuffers(1, &buffer);
+            m_id = buffer;
         }
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, m_id.value());
         glBufferData(GL_ARRAY_BUFFER, m_vertexCache.size() * sizeof(float),
                      m_vertexCache.data(), GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -17,19 +22,21 @@ namespace Renderer {
         m_isDirty = false;
     }
 
-    void MeshGLES::Destroy() {
-        if (m_vbo != 0) {
-            glDeleteBuffers(1, &m_vbo);
-            m_vbo = 0;
+    void Mesh::Unload() {
+        if (m_id.has_value()) {
+            glDeleteBuffers(1, &m_id.value());
+            m_id.reset();
         }
     }
 
-    void MeshGLES::Draw() {
-        if (m_isDirty) {
+    void Mesh::Draw() {
+        if (m_isDirty)
             Load();
-        }
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+        if (!m_id.has_value())
+            return;
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_id.value());
 
         int stride = 0;
         for (int size : m_vertexAttributes) stride += size;

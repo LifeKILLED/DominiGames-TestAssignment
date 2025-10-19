@@ -14,6 +14,7 @@ namespace Renderer {
             virtual void onResume(void* windowData) = 0;
 
             virtual bool isInitialized() const = 0;
+            virtual bool destroyResourcesWithContext() const = 0;
 
             [[maybe_unused]] virtual int getWidth() const = 0;
             [[maybe_unused]] virtual int getHeight() const = 0;

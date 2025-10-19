@@ -4,8 +4,13 @@
 #include "Util/Singleton.h"
 
 #include <memory>
+#include <unordered_set>
 
 namespace Renderer {
+
+    class Resource;
+    class Mesh;
+    class Shader;
 
     class Renderer : public Singleton<Renderer> {
     public:
@@ -13,11 +18,18 @@ namespace Renderer {
         void destroyContext();
         void draw();
 
+    public:
+        std::shared_ptr<Mesh> createMesh();
+        std::shared_ptr<Shader> createShader(const std::string& vertSrc, const std::string& fragSrc);
+        void destroy(std::shared_ptr<Resource> ptr);
+
     private:
         friend class Singleton<Renderer>;
         Renderer() = default;
 
-        std::unique_ptr<Context> context;
+        std::unique_ptr<Context> m_context;
+
+        std::unordered_set<std::shared_ptr<Resource>> m_resources;
     };
 
 } // namespace Renderer

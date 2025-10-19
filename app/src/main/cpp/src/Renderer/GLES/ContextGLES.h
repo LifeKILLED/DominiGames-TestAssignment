@@ -21,6 +21,7 @@ namespace Renderer {
         void onResume(void* windowData) override;
 
         bool isInitialized() const override { return m_initialized; }
+        bool destroyResourcesWithContext() const override { return true; }
 
         int getWidth() const override { return m_width; }
         int getHeight() const override { return m_height; }

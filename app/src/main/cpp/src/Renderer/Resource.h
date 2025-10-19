@@ -7,7 +7,7 @@ namespace Renderer {
         virtual ~Resource() = default;
 
         virtual void Load() = 0;
-        virtual void Destroy() = 0;
+        virtual void Unload() = 0;
     };
 
 } // namespace Renderer

@@ -9,14 +9,19 @@ namespace Renderer {
 
     class Shader : public Resource {
     public:
-        Shader(std::string  vertSrc, std::string  fragSrc)
-                : m_vertSrc(std::move(vertSrc)), m_fragSrc(std::move(fragSrc)) {}
+        Shader() = default;
+        ~Shader() override;
 
-        virtual void Bind() = 0;
+        Shader(const std::string& vertSrc, const std::string& fragSrc);
+
+        void Load() override;
+        void Unload() override;
+        void Bind();
 
     protected:
         std::string m_vertSrc;
         std::string m_fragSrc;
+        std::optional<unsigned int> m_id;
     };
 
 } // namespace Renderer
