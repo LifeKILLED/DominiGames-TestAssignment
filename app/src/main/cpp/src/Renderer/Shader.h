@@ -2,6 +2,7 @@
 
 #include "Resource.h"
 
+#include <glm/gtc/matrix_transform.hpp>
 #include <string>
 #include <utility>
 
@@ -14,6 +15,8 @@ namespace Renderer {
 
         Shader(const std::string& vertSrc, const std::string& fragSrc);
 
+        void SetTransform(const glm::mat4 transform);
+
         void Load() override;
         void Unload() override;
         void Bind();
@@ -22,6 +25,8 @@ namespace Renderer {
         std::string m_vertSrc;
         std::string m_fragSrc;
         std::optional<unsigned int> m_id;
+
+        int m_transformId {};
     };
 
 } // namespace Renderer

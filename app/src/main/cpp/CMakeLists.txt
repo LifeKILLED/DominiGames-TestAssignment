@@ -12,10 +12,14 @@ FetchContent_MakeAvailable(glm)
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
         src/native-lib.cpp
+        src/Renderer/MeshRenderer.cpp
         src/Renderer/Renderer.cpp
         src/Renderer/GLES/ContextGLES.cpp
         src/Renderer/GLES/Mesh.cpp
         src/Renderer/GLES/Shader.cpp
+        src/Scene/Scene.cpp
+        src/Scene/Entity.cpp
+        src/Scene/Transform.cpp
         ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
 )
 

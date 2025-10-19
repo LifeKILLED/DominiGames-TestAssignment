@@ -1,7 +1,7 @@
 #include "Renderer/Shader.h"
 
 #include <GLES2/gl2.h>
-
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 namespace Renderer {
@@ -39,7 +39,11 @@ namespace Renderer {
             char buffer[512];
             glGetProgramInfoLog(m_id.value(), 512, nullptr, buffer);
             std::cerr << "Shader link error: " << buffer << std::endl;
+            return;
         }
+
+        static constexpr auto TRANSFORM_UNIFORM_NAME = "transform";
+        m_transformId = glGetUniformLocation(m_id.value(), TRANSFORM_UNIFORM_NAME);
     }
 
     void Shader::Unload() {
@@ -52,6 +56,10 @@ namespace Renderer {
     void Shader::Bind() {
         if (m_id.has_value())
             glUseProgram(m_id.value());
+    }
+
+    void Shader::SetTransform(const glm::mat4 transform) {
+        glUniformMatrix4fv(m_transformId, 1, GL_FALSE, glm::value_ptr(transform));
     }
 
 } // namespace Renderer
