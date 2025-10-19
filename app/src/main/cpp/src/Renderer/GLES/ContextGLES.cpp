@@ -24,46 +24,46 @@ namespace Renderer {
         EGLConfig config;
         EGLint format;
 
-        display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-        if (display == EGL_NO_DISPLAY) { LOGE("Failed to get EGL display"); return; }
+        m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+        if (m_display == EGL_NO_DISPLAY) { LOGE("Failed to get EGL m_display"); return; }
 
-        if (!eglInitialize(display, nullptr, nullptr)) { LOGE("Failed to initialize EGL"); return; }
+        if (!eglInitialize(m_display, nullptr, nullptr)) { LOGE("Failed to initialize EGL"); return; }
 
-        if (!eglChooseConfig(display, attribs, &config, 1, &numConfigs)) { LOGE("Failed to choose EGL config"); return; }
+        if (!eglChooseConfig(m_display, attribs, &config, 1, &numConfigs)) { LOGE("Failed to choose EGL config"); return; }
 
-        eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
+        eglGetConfigAttrib(m_display, config, EGL_NATIVE_VISUAL_ID, &format);
         ANativeWindow_setBuffersGeometry(window, 0, 0, format);
 
-        surface = eglCreateWindowSurface(display, config, window, nullptr);
-        if (surface == EGL_NO_SURFACE) { LOGE("Failed to create EGL surface"); return; }
+        m_surface = eglCreateWindowSurface(m_display, config, window, nullptr);
+        if (m_surface == EGL_NO_SURFACE) { LOGE("Failed to create EGL m_surface"); return; }
 
         eglBindAPI(EGL_OPENGL_ES_API);
 
-        const EGLint contextAttribs[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
-        context = eglCreateContext(display, config, nullptr, contextAttribs);
-        if (context == EGL_NO_CONTEXT) { LOGE("Failed to create EGL context"); return; }
+        const EGLint m_contextAttribs[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
+        m_context = eglCreateContext(m_display, config, nullptr, m_contextAttribs);
+        if (m_context == EGL_NO_CONTEXT) { LOGE("Failed to create EGL m_context"); return; }
 
-        if (!eglMakeCurrent(display, surface, surface, context)) {
+        if (!eglMakeCurrent(m_display, m_surface, m_surface, m_context)) {
             LOGE("eglMakeCurrent failed: %x", eglGetError());
             return;
         }
 
-        eglSwapInterval(display, 1);
+        eglSwapInterval(m_display, 1);
 
-        eglQuerySurface(display, surface, EGL_WIDTH, &width);
-        eglQuerySurface(display, surface, EGL_HEIGHT, &height);
-        glViewport(0, 0, width, height);
+        eglQuerySurface(m_display, m_surface, EGL_WIDTH, &m_width);
+        eglQuerySurface(m_display, m_surface, EGL_HEIGHT, &m_height);
+        glViewport(0, 0, m_width, m_height);
 
-        initialized = true;
-        LOGI("EGL initialized %dx%d", width, height);
+        m_initialized = true;
+        LOGI("EGL initialized %dx%d", m_width, m_height);
     }
 
     void ContextGLES::drawFrame() {
-        if (!initialized) return;
+        if (!m_initialized) return;
         glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glFlush();
-        eglSwapBuffers(display, surface);
+        eglSwapBuffers(m_display, m_surface);
     }
 
     void ContextGLES::terminate() {
@@ -71,18 +71,18 @@ namespace Renderer {
     }
 
     void ContextGLES::terminateGLES() {
-        if (display != EGL_NO_DISPLAY) {
-            eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-            if (context != EGL_NO_CONTEXT) eglDestroyContext(display, context);
-            if (surface != EGL_NO_SURFACE) eglDestroySurface(display, surface);
-            eglTerminate(display);
+        if (m_display != EGL_NO_DISPLAY) {
+            eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+            if (m_context != EGL_NO_CONTEXT) eglDestroyContext(m_display, m_context);
+            if (m_surface != EGL_NO_SURFACE) eglDestroySurface(m_display, m_surface);
+            eglTerminate(m_display);
         }
 
-        display = EGL_NO_DISPLAY;
-        context = EGL_NO_CONTEXT;
-        surface = EGL_NO_SURFACE;
-        initialized = false;
-        width = height = 0;
+        m_display = EGL_NO_DISPLAY;
+        m_context = EGL_NO_CONTEXT;
+        m_surface = EGL_NO_SURFACE;
+        m_initialized = false;
+        m_width = m_height = 0;
 
         LOGI("EGL terminated");
     }
