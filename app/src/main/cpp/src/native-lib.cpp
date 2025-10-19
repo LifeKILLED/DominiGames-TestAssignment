@@ -1,18 +1,26 @@
+#include "Renderer/Renderer.h"
+#include "Renderer/MeshData/BasicMesh.h"
+#include "Content/Loader.h"
+
 #include <jni.h>
 #include <string>
 #include <android/native_window.h>
 #include <android/log.h>
 #include <android_native_app_glue.h>
-
-#include "Renderer/Renderer.h"
+#include <android/asset_manager_jni.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeGL", __VA_ARGS__))
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "NativeGL", __VA_ARGS__))
 
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_initLoader(
+        JNIEnv* env, jobject /* this */, jobject assetManager) {
+    Loader::get().Init(AAssetManager_fromJava(env, assetManager));
+}
+
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_dominigames_1testassignment_MainActivity_stringFromJNI(
-        JNIEnv* env,
-        jobject /* this */) {
+        JNIEnv* env, jobject /* this */) {
     std::string hello = "Hello from C++";
     return env->NewStringUTF(hello.c_str());
 }
@@ -21,9 +29,16 @@ Java_com_example_dominigames_1testassignment_MainActivity_stringFromJNI(
     app->onAppCmd = [](struct android_app* app, int32_t cmd) {
         switch (cmd) {
             case APP_CMD_INIT_WINDOW:
-                if (app->window)
+                if (app->window) {
                     Renderer::Renderer::get().createContext(reinterpret_cast<void*>(app->window));
+
+                    Loader::get().Init(app->activity->assetManager); // AAssetManager из android_app
+                    auto cubeMesh = Loader::get().LoadMesh("cube.ini");
+                    auto vertexShader = Loader::get().LoadTextFile("basic.vert");
+                    auto fragmentShader = Loader::get().LoadTextFile("basic.frag");
+                }
                 break;
+
             case APP_CMD_TERM_WINDOW:
                 Renderer::Renderer::get().destroyContext();
                 break;

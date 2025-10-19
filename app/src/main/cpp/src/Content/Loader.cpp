@@ -2,13 +2,19 @@
 
 #include "Renderer/MeshData/BasicMesh.h"
 
-#include <iostream>
+#include <sstream>
+#include <android/asset_manager_jni.h>
+#include <android/asset_manager.h>
+
+void Loader::Init(AAssetManager* mgr) {
+    assetManager = mgr;
+}
 
 std::string Loader::LoadTextFile(const std::string& filename) {
     std::string fullPath = "shaders/" + filename;
     AAsset* asset = AAssetManager_open(assetManager, fullPath.c_str(), AASSET_MODE_STREAMING);
     if (!asset) {
-        std::cerr << "Can't open file: " << fullPath << "\n";
+        LOGE("Can't open file: %s", fullPath.c_str());
         return {};
     }
 
@@ -24,7 +30,7 @@ std::vector<Renderer::BasicMesh> Loader::LoadMesh(const std::string& filename) {
     std::string fullPath = "mesh/" + filename;
     AAsset* asset = AAssetManager_open(assetManager, fullPath.c_str(), AASSET_MODE_STREAMING);
     if (!asset) {
-        std::cerr << "Can't open mesh: " << fullPath << "\n";
+        LOGE("Can't open mesh: %s", fullPath.c_str());
         return vertices;
     }
 
