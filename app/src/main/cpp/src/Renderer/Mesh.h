@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Resource.h"
+#include "Renderer/MeshData/MeshBase.h"
 
 #include <vector>
 #include <cstring>
@@ -30,13 +31,18 @@ namespace Renderer {
 
     template<typename T>
     void Mesh::LoadVertices(const std::vector<T>& vertices) {
-        if constexpr (std::is_same_v<decltype(T::vertexAttributes), const std::array<int, T::vertexAttributes.size()>&>) {
-            m_vertexAttributes = std::vector<int>(T::vertexAttributes.begin(), T::vertexAttributes.end());
+        if (!vertices.empty()) {
+            if constexpr (std::is_base_of_v<MeshBase, T>) {
+                m_vertexAttributes = vertices[0].GetAttributes();
+            } else {
+                static_assert(std::is_base_of_v<MeshBase, T>, "T must inherit MeshBase");
+            }
         }
 
         m_vertexCache.resize((vertices.size() * sizeof(T)) / sizeof(float));
-        if (!m_vertexCache.empty())
+        if (!m_vertexCache.empty()) {
             std::memcpy(m_vertexCache.data(), vertices.data(), sizeof(T) * vertices.size());
+        }
 
         m_isDirty = true;
     }

@@ -62,4 +62,8 @@ namespace Renderer {
         glUniformMatrix4fv(m_transformId, 1, GL_FALSE, glm::value_ptr(transform));
     }
 
+    void Shader::SetProjection(const glm::mat4 projection) {
+        glUniformMatrix4fv(m_projectionId, 1, GL_FALSE, glm::value_ptr(projection));
+    }
+
 } // namespace Renderer

@@ -16,6 +16,7 @@ namespace Renderer {
         Shader(const std::string& vertSrc, const std::string& fragSrc);
 
         void SetTransform(const glm::mat4 transform);
+        void SetProjection(const glm::mat4 projection);
 
         void Load() override;
         void Unload() override;

@@ -17,6 +17,8 @@ namespace Scene
     public:
         explicit Entity(const std::string& name = "Entity");
 
+        void Init();
+
         const std::string& GetName() const;
         void SetName(const std::string& name);
 
@@ -25,7 +27,9 @@ namespace Scene
 
         void AddChild(std::shared_ptr<Entity> child);
         const std::vector<std::shared_ptr<Entity>>& GetChildren() const;
-        std::weak_ptr<Entity> GetParent() const;
+
+        void SetParent(std::shared_ptr<Entity> parent);
+        std::shared_ptr<Entity> GetParent() const;
 
         void DrawRecursive();
 

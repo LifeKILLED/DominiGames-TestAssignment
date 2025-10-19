@@ -16,6 +16,8 @@ namespace Renderer {
     public:
         void createContext(void* windowData);
         void destroyContext();
+        const std::unique_ptr<Context>& getContext() const { return m_context; };
+
         void draw();
 
     public:

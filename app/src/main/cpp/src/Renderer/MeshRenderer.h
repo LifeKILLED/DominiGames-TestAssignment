@@ -10,7 +10,7 @@ namespace Renderer
     class MeshRenderer
     {
     public:
-        void Draw(const glm::mat4& transform);
+        void Draw(const glm::mat4& transform, const glm::mat4& projection);
 
         void SetShader(std::shared_ptr<Shader> shader);
         std::shared_ptr<Shader> GetShader();

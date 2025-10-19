@@ -1,6 +1,6 @@
 #include "Renderer/Renderer.h"
-#include "Renderer/MeshData/BasicMesh.h"
 #include "Content/Loader.h"
+#include "Scene/Scene.h"
 
 #include <jni.h>
 #include <string>
@@ -31,11 +31,8 @@ Java_com_example_dominigames_1testassignment_MainActivity_stringFromJNI(
             case APP_CMD_INIT_WINDOW:
                 if (app->window) {
                     Renderer::Renderer::get().createContext(reinterpret_cast<void*>(app->window));
-
                     Loader::get().Init(app->activity->assetManager); // AAssetManager из android_app
-                    auto cubeMesh = Loader::get().LoadMesh("cube.ini");
-                    auto vertexShader = Loader::get().LoadTextFile("basic.vert");
-                    auto fragmentShader = Loader::get().LoadTextFile("basic.frag");
+                    Scene::Scene::get().LoadScene("cube_scene.ini");
                 }
                 break;
 

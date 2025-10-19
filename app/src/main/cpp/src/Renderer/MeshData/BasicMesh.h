@@ -1,17 +1,15 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <array>
+#include "MeshBase.h"
 
 namespace Renderer {
 
-    struct BasicMesh {
-        glm::vec3 position;
+    struct BasicMesh : public MeshBase {
         glm::vec2 uv;
         glm::vec3 normal;
         glm::vec4 color;
 
-        static constexpr std::array<int, 4> vertexAttributes = {3, 2, 3, 4};
+        std::vector<int> & GetAttributes() const override { static auto a = std::vector<int>{3, 2, 3, 4}; return a; }
     };
 
 } // namespace Renderer

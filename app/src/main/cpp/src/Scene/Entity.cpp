@@ -1,6 +1,7 @@
 #include "Entity.h"
 
 #include "Renderer/MeshRenderer.h"
+#include "Scene/Scene.h"
 #include "Transform.h"
 
 namespace Scene
@@ -9,8 +10,12 @@ namespace Scene
         : m_name(name)
     {
         m_transform = std::make_shared<Transform>();
-        m_transform->SetEntity(shared_from_this());
         m_renderer = std::make_shared<Renderer::MeshRenderer>();
+    }
+
+    void Entity::Init()
+    {
+        m_transform->SetEntity(shared_from_this());
     }
 
     std::shared_ptr<Transform> Entity::GetTransform() { return m_transform; }
@@ -30,15 +35,23 @@ namespace Scene
         return m_children;
     }
 
-    std::weak_ptr<Entity> Entity::GetParent() const
+    void Entity::SetParent(std::shared_ptr<Entity> parent)
     {
-        return m_parent;
+        m_parent = parent;
+
+        m_transform->MarkDirty();
+    }
+
+    std::shared_ptr<Entity> Entity::GetParent() const
+    {
+        return m_parent.lock();
     }
 
     void Entity::DrawRecursive()
     {
-        if (m_renderer)
-            m_renderer->Draw(m_transform->GetWorldMatrix());
+        if (m_renderer) {
+            m_renderer->Draw(m_transform->GetWorldMatrix(), Scene::get().GetProjection());
+        }
 
         for (auto& child : m_children)
         {

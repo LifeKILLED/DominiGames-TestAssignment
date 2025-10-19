@@ -11,10 +11,9 @@ void Loader::Init(AAssetManager* mgr) {
 }
 
 std::string Loader::LoadTextFile(const std::string& filename) {
-    std::string fullPath = "shaders/" + filename;
-    AAsset* asset = AAssetManager_open(assetManager, fullPath.c_str(), AASSET_MODE_STREAMING);
+    AAsset* asset = AAssetManager_open(assetManager, filename.c_str(), AASSET_MODE_STREAMING);
     if (!asset) {
-        LOGE("Can't open file: %s", fullPath.c_str());
+        LOGE("Can't open file: %s", filename.c_str());
         return {};
     }
 

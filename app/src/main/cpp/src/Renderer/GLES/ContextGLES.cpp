@@ -1,5 +1,7 @@
 #include "Renderer/GLES/ContextGLES.h"
 
+#include "Scene/Scene.h" // TODO: remove
+
 #include <android/native_window.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeGL", __VA_ARGS__))
@@ -60,8 +62,11 @@ namespace Renderer {
 
     void ContextGLES::drawFrame() {
         if (!m_initialized) return;
-        glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+        glClearColor(0.0f, 0.1f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        Scene::Scene::get().Draw();
+
         glFlush();
         eglSwapBuffers(m_display, m_surface);
     }

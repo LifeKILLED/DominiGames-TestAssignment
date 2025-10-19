@@ -56,7 +56,8 @@ namespace Renderer {
             offset += m_vertexAttributes[i];
         }
 
-        glDrawArrays(GL_TRIANGLES, 0, m_vertexCache.size() / (stride / sizeof(float)));
+        int verticesCount = m_vertexCache.size() / (stride / sizeof(float));
+        glDrawArrays(GL_TRIANGLES, 0, verticesCount);
 
         for (GLuint i = 0; i < m_vertexAttributes.size(); ++i) {
             glDisableVertexAttribArray(i);

@@ -4,12 +4,13 @@
 
 namespace Renderer
 {
-    void MeshRenderer::Draw(const glm::mat4& transform)
+    void MeshRenderer::Draw(const glm::mat4& transform, const glm::mat4& projection)
     {
         if (!m_shader || !m_mesh) return;
 
         m_shader->Bind();
         m_shader->SetTransform(transform);
+        m_shader->SetProjection(projection);
         m_mesh->Draw();
     }
 
