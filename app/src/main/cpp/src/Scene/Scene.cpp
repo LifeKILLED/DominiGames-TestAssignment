@@ -68,7 +68,11 @@ namespace Scene
 
     void Scene::Draw()
     {
-        m_projection = GetCamera()->GetTransform()->GetViewProjection();
+        auto camera = m_camera.lock();
+        if (!camera)
+            return;
+
+        m_projection = camera->GetTransform()->GetViewProjection();
 
         m_root->DrawRecursive();
     }

@@ -14,7 +14,8 @@ namespace Renderer {
         ~ContextGLES() override { terminateGLES(); }
 
         void initialize(void* windowData) override;
-        void drawFrame() override;
+        void beginFrame() override;
+        void endFrame() override;
         void terminate() override;
 
         void onPause() override;
@@ -28,6 +29,8 @@ namespace Renderer {
 
     private:
         void terminateGLES();
+
+        void DrawTestTriangle();
 
     private:
         EGLDisplay m_display = EGL_NO_DISPLAY;

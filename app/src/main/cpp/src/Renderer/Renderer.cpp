@@ -1,6 +1,7 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Mesh.h"
 #include "Renderer/Shader.h"
+#include "Scene/Scene.h"
 
 #if DCONTEXT_GLES
     #include "Renderer/GLES/ContextGLES.h"
@@ -11,9 +12,14 @@
 
 namespace Renderer {
 
-    void Renderer::draw() {
+    void Renderer::beginFrame() {
         if (m_context && m_context->isInitialized())
-            m_context->drawFrame();
+            m_context->beginFrame();
+    }
+
+    void Renderer::endFrame() {
+        if (m_context && m_context->isInitialized())
+            m_context->endFrame();
     }
 
     void Renderer::destroyContext() {

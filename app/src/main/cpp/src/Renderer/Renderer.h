@@ -18,7 +18,8 @@ namespace Renderer {
         void destroyContext();
         const std::unique_ptr<Context>& getContext() const { return m_context; };
 
-        void draw();
+        void beginFrame();
+        void endFrame();
 
     public:
         std::shared_ptr<Mesh> createMesh();

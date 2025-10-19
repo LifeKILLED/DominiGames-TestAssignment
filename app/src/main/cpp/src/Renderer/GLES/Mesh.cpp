@@ -39,7 +39,8 @@ namespace Renderer {
         glBindBuffer(GL_ARRAY_BUFFER, m_id.value());
 
         int stride = 0;
-        for (int size : m_vertexAttributes) stride += size;
+        for (int size: m_vertexAttributes)
+            stride += size;
         stride *= sizeof(float);
 
         int offset = 0;
@@ -51,17 +52,16 @@ namespace Renderer {
                     GL_FLOAT,
                     GL_FALSE,
                     stride,
-                    (void*)(offset * sizeof(float))
+                    reinterpret_cast<void *>(offset * sizeof(float))
             );
             offset += m_vertexAttributes[i];
         }
 
-        int verticesCount = m_vertexCache.size() / (stride / sizeof(float));
-        glDrawArrays(GL_TRIANGLES, 0, verticesCount);
+        int vertexCount = m_vertexCache.size() / (stride / sizeof(float));
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 
-        for (GLuint i = 0; i < m_vertexAttributes.size(); ++i) {
+        for (GLuint i = 0; i < m_vertexAttributes.size(); ++i)
             glDisableVertexAttribArray(i);
-        }
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }

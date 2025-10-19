@@ -80,7 +80,7 @@ namespace Scene {
     glm::mat4 Transform::GetViewProjection() const {
         const auto& ctx = Renderer::Renderer::get().getContext();
 
-        float fov = 45.0f;
+        float fov = 100.0f;
         float aspect = static_cast<float>(ctx->getWidth()) / static_cast<float>(ctx->getHeight());
         float nearPlane = 0.1f;
         float farPlane = 100.0f;

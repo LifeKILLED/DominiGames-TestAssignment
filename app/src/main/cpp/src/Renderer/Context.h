@@ -7,7 +7,8 @@ namespace Renderer {
             virtual ~Context() = default;
 
             virtual void initialize(void* windowData) = 0;
-            virtual void drawFrame() = 0;
+            virtual void beginFrame() = 0;
+            virtual void endFrame() = 0;
             virtual void terminate() = 0;
 
             virtual void onPause() = 0;

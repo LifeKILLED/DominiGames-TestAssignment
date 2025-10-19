@@ -51,6 +51,8 @@ Java_com_example_dominigames_1testassignment_MainActivity_stringFromJNI(
             if (app->destroyRequested) return;
         }
 
-        Renderer::Renderer::get().draw();
+        Renderer::Renderer::get().beginFrame();
+        Scene::Scene::get().Draw();
+        Renderer::Renderer::get().endFrame();
     }
 }
