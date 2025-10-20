@@ -1,5 +1,6 @@
 #include "Renderer/Renderer.h"
 #include "Content/Loader.h"
+#include "Input/Input.h"
 #include "Scene/Scene.h"
 
 #include <jni.h>
@@ -23,6 +24,27 @@ Java_com_example_dominigames_1testassignment_MainActivity_stringFromJNI(
         JNIEnv* env, jobject /* this */) {
     std::string hello = "Hello from C++";
     return env->NewStringUTF(hello.c_str());
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_onPointerStart(
+        JNIEnv* env, jobject thiz, jint id, jfloat x, jfloat y) {
+    Input::Input::get().startPointer(id, x, y);
+    LOGI("PointerStart id=%d x=%f y=%f", id, x, y);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_onPointerMove(
+        JNIEnv* env, jobject thiz, jint id, jfloat x, jfloat y) {
+    Input::Input::get().updatePointer(id, x, y);
+    LOGI("PointerMove id=%d x=%f y=%f", id, x, y);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_onPointerEnd(
+        JNIEnv* env, jobject thiz, jint id) {
+    Input::Input::get().endPointer(id);
+    LOGI("PointerEnd id=%d", id);
 }
 
 [[maybe_unused]] void android_main(struct android_app* app) {
@@ -52,6 +74,7 @@ Java_com_example_dominigames_1testassignment_MainActivity_stringFromJNI(
         }
 
         Renderer::Renderer::get().beginFrame();
+        Scene::Scene::get().Update();
         Scene::Scene::get().Draw();
         Renderer::Renderer::get().endFrame();
     }

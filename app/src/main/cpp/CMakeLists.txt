@@ -21,6 +21,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         src/Scene/Entity.cpp
         src/Scene/Transform.cpp
         src/Content/Loader.cpp
+        src/Input/Input.cpp
         ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
 )
 
