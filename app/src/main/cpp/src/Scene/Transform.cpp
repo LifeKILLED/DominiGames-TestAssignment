@@ -79,7 +79,10 @@ namespace Scene {
 
     glm::mat4 Transform::GetViewProjection() const {
         const auto& ctx = Renderer::Renderer::get().getContext();
+        if (ctx == nullptr || !ctx->isInitialized() || ctx->getHeight() == 0)
+            return glm::mat4{1.0};
 
+        // TODO: move to global settings
         float fov = 100.0f;
         float aspect = static_cast<float>(ctx->getWidth()) / static_cast<float>(ctx->getHeight());
         float nearPlane = 0.1f;
@@ -87,6 +90,7 @@ namespace Scene {
         glm::mat4 projection = glm::perspective(glm::radians(fov), aspect, nearPlane, farPlane);
 
         glm::mat4 view = glm::inverse(GetWorldMatrix());
+
         return projection * view;
     }
 }

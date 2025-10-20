@@ -15,13 +15,12 @@ namespace Renderer {
 }
 
 class Loader : public Singleton<Loader> {
-    friend class Singleton<Loader>; // Singleton может создать Loader
+    friend class Singleton<Loader>;
 
 public:
     void Init(AAssetManager* mgr);
 
     std::string LoadTextFile(const std::string& filename);
-    std::vector<Renderer::BasicMesh> LoadMesh(const std::string& filename);
 
 private:
     Loader() = default;

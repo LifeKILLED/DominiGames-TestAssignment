@@ -30,8 +30,6 @@ namespace Renderer {
     private:
         void terminateGLES();
 
-        void DrawTestTriangle();
-
     private:
         EGLDisplay m_display = EGL_NO_DISPLAY;
         EGLSurface m_surface = EGL_NO_SURFACE;

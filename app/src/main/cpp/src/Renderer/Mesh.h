@@ -1,12 +1,10 @@
 #pragma once
 
 #include "Resource.h"
-#include "Renderer/MeshData/MeshBase.h"
+#include "Renderer/MeshData.h"
 
 #include <vector>
-#include <cstring>
-#include <type_traits>
-#include <memory>
+#include <optional>
 
 namespace Renderer {
 
@@ -15,36 +13,25 @@ namespace Renderer {
         Mesh() = default;
         ~Mesh() override;
 
-        template<typename T>
-        void LoadVertices(const std::vector<T>& vertices);
+        void SetData(const MeshData& data);
 
         void Load() override;
         void Unload() override;
         void Draw();
 
     private:
+        void BuildVertexCache();
+
+    private:
+        MeshData m_meshData;
+
+        std::optional<unsigned int> m_vbo;   // Vertex buffer
+        std::optional<unsigned int> m_ibo;   // Index buffer
+        bool m_isDirty {true};
+
         std::vector<float> m_vertexCache;
         std::vector<int> m_vertexAttributes;
-        std::optional<unsigned int> m_id;
-        bool m_isDirty {true};
+        int m_stride {0};
     };
-
-    template<typename T>
-    void Mesh::LoadVertices(const std::vector<T>& vertices) {
-        if (!vertices.empty()) {
-            if constexpr (std::is_base_of_v<MeshBase, T>) {
-                m_vertexAttributes = vertices[0].GetAttributes();
-            } else {
-                static_assert(std::is_base_of_v<MeshBase, T>, "T must inherit MeshBase");
-            }
-        }
-
-        m_vertexCache.resize((vertices.size() * sizeof(T)) / sizeof(float));
-        if (!m_vertexCache.empty()) {
-            std::memcpy(m_vertexCache.data(), vertices.data(), sizeof(T) * vertices.size());
-        }
-
-        m_isDirty = true;
-    }
 
 } // namespace Renderer

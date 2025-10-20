@@ -11,6 +11,7 @@ namespace Renderer
         m_shader->Bind();
         m_shader->SetTransform(transform);
         m_shader->SetProjection(projection);
+
         m_mesh->Draw();
     }
 

@@ -3,7 +3,7 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "Content/Loader.h"
-#include "Renderer/MeshData/BasicMesh.h"
+#include "Renderer/MeshData.h"
 #include "Renderer/MeshRenderer.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
@@ -141,14 +141,17 @@ namespace Scene
         }
 
         if (!modelFile.empty()) {
-            auto meshData = Loader::get().LoadMesh(modelFile);
+            Renderer::MeshData meshData;
+            meshData.LoadFromString(Loader::get().LoadTextFile("mesh/" + modelFile));
             auto mesh = Renderer::Renderer::get().createMesh();
-            mesh->LoadVertices(meshData);
+            mesh->SetData(meshData);
+            mesh->Load();
             entity->GetRenderer()->SetMesh(mesh);
 
             auto vert = Loader::get().LoadTextFile("shaders/" + shaderFile + ".vert");
             auto frag = Loader::get().LoadTextFile("shaders/" + shaderFile + ".frag");
             auto shader = Renderer::Renderer::get().createShader(vert, frag);
+            shader->Load();
             entity->GetRenderer()->SetShader(shader);
         }
 
