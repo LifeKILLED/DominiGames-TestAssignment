@@ -145,13 +145,11 @@ namespace Scene
             meshData.LoadFromString(Loader::get().LoadTextFile("mesh/" + modelFile));
             auto mesh = Renderer::Renderer::get().createMesh();
             mesh->SetData(meshData);
-            mesh->Load();
             entity->GetRenderer()->SetMesh(mesh);
 
             auto vert = Loader::get().LoadTextFile("shaders/" + shaderFile + ".vert");
             auto frag = Loader::get().LoadTextFile("shaders/" + shaderFile + ".frag");
             auto shader = Renderer::Renderer::get().createShader(vert, frag);
-            shader->Load();
             entity->GetRenderer()->SetShader(shader);
         }
 

@@ -1,5 +1,8 @@
 #include "Renderer/Shader.h"
 
+#include "Renderer/Renderer.h"
+#include "Renderer/Context.h"
+
 #include <GLES2/gl2.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
@@ -15,6 +18,12 @@ namespace Renderer {
     }
 
     void Shader::Load() {
+        const auto& context = Renderer::Renderer::get().getContext();
+        if (context == nullptr || !context->isInitialized())
+            return;
+
+        m_isLoaded = true;
+
         GLuint vert = glCreateShader(GL_VERTEX_SHADER);
         const char* vSrc = m_vertSrc.c_str();
         glShaderSource(vert, 1, &vSrc, nullptr);
@@ -79,9 +88,14 @@ namespace Renderer {
             glDeleteProgram(m_id.value());
             m_id.reset();
         }
+
+        m_isLoaded = false;
     }
 
     void Shader::Bind() {
+        if (!m_isLoaded)
+            Load();
+
         if (m_id.has_value())
             glUseProgram(m_id.value());
     }

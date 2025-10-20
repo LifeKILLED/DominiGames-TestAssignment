@@ -1,4 +1,8 @@
 #include "Renderer/Mesh.h"
+
+#include "Renderer/Renderer.h"
+#include "Renderer/Context.h"
+
 #include <GLES2/gl2.h>
 
 namespace Renderer {
@@ -50,6 +54,10 @@ namespace Renderer {
     }
 
     void Mesh::Load() {
+        const auto& context = Renderer::Renderer::get().getContext();
+        if (context == nullptr || !context->isInitialized())
+            return;
+
         if (!m_vbo.has_value()) {
             GLuint vbo {};
             glGenBuffers(1, &vbo);
@@ -78,6 +86,7 @@ namespace Renderer {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         m_isDirty = false;
+        m_isLoaded = true;
     }
 
     void Mesh::Unload() {
@@ -85,17 +94,20 @@ namespace Renderer {
             glDeleteBuffers(1, &m_vbo.value());
             m_vbo.reset();
         }
+
         if (m_ibo.has_value()) {
             glDeleteBuffers(1, &m_ibo.value());
             m_ibo.reset();
         }
+
+        m_isLoaded = false;
     }
 
     void Mesh::Draw() {
-        if (m_isDirty)
+        if (m_isDirty || !m_isLoaded)
             Load();
 
-        if (!m_vbo.has_value() || !m_ibo.has_value())
+        if (!m_isLoaded || !m_vbo.has_value() || !m_ibo.has_value())
             return;
 
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo.value());

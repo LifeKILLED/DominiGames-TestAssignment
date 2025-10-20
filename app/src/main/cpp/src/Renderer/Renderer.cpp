@@ -30,7 +30,8 @@ namespace Renderer {
 
         if (m_context->destroyResourcesWithContext()) {
             for (auto resource : m_resources) {
-                resource->Unload();
+                if (resource->IsLoaded())
+                    resource->Unload();
             }
         }
     }
@@ -41,10 +42,9 @@ namespace Renderer {
 
         m_context->onResume(window);
 
-        if (m_context->destroyResourcesWithContext()) {
-            for (auto resource : m_resources) {
+        for (auto resource : m_resources) {
+            if (!resource->IsLoaded())
                 resource->Load();
-            }
         }
     }
 
