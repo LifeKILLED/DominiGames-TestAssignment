@@ -90,7 +90,7 @@ namespace Scene
         auto rotation = camera->GetTransform()->GetRotation();
         auto offset = Input::Input::get().getPointerDelta(0);
         rotation.x += offset.second;
-        rotation.z += offset.first;
+        rotation.y += offset.first;
         camera->GetTransform()->SetRotation(rotation);
     }
 

@@ -22,8 +22,8 @@ namespace Scene {
     }
 
     void Transform::UpdateLocalMatrix() const {
-//        if (!m_localIsDirty)
-//            return;
+        if (!m_localIsDirty)
+            return;
 
         glm::mat4 T = glm::translate(glm::mat4(1.0f), m_position);
         glm::mat4 Rx = glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.x), {1, 0, 0});
@@ -49,21 +49,19 @@ namespace Scene {
     void Transform::UpdateWorldMatrix() const {
         UpdateLocalMatrix();
 
-        m_worldMatrix = m_localMatrix;
-//
-//        if (!m_worldIsDirty)
-//            return;
-//
-//        if (auto owner = m_entity.lock()) {
-//            if (auto parent = owner->GetParent()) {
-//                auto parentMatrix = parent->GetTransform()->GetWorldMatrix();
-//                m_worldMatrix = parentMatrix * m_localMatrix;
-//            } else {
-//                m_worldMatrix = m_localMatrix;
-//            }
-//        }
-//
-//        m_worldIsDirty = false;
+        if (!m_worldIsDirty)
+            return;
+
+        if (auto owner = m_entity.lock()) {
+            if (auto parent = owner->GetParent()) {
+                auto parentMatrix = parent->GetTransform()->GetWorldMatrix();
+                m_worldMatrix = parentMatrix * m_localMatrix;
+            } else {
+                m_worldMatrix = m_localMatrix;
+            }
+        }
+
+        m_worldIsDirty = false;
     }
 
     void Transform::LookAt(const glm::vec3& target, const glm::vec3& up) {
