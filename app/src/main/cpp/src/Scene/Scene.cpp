@@ -83,7 +83,7 @@ namespace Scene
     {
         PrintHierarchy();
 
-        auto camera = m_camera.lock();
+        auto camera = FindEntity("CameraParent");
         if (!camera)
             return;
 
