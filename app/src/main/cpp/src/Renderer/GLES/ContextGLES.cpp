@@ -93,6 +93,13 @@ namespace Renderer {
         terminateGLES();
     }
 
+    void ContextGLES::setViewport(int width, int height)
+    {
+        m_width = width;
+        m_height = height;
+        glViewport(0, 0, width, height);
+    }
+
     void ContextGLES::terminateGLES() {
         if (m_display != EGL_NO_DISPLAY) {
             eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);

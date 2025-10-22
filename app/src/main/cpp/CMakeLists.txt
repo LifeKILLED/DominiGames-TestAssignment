@@ -42,12 +42,10 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         src/Content/Loader.cpp
         src/Input/Input.cpp
         src/Util/IniUtils.cpp
-        ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
 )
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         src
-        ${ANDROID_NDK}/sources/android/native_app_glue
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

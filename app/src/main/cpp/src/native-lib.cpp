@@ -4,14 +4,13 @@
 #include "Scene/Scene.h"
 
 #include <jni.h>
-#include <string>
-#include <android/native_window.h>
-#include <android/log.h>
-#include <android_native_app_glue.h>
 #include <android/asset_manager_jni.h>
+#include <android/log.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeGL", __VA_ARGS__))
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "NativeGL", __VA_ARGS__))
+
+extern "C" {
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_dominigames_1testassignment_MainActivity_initLoader(
@@ -19,63 +18,70 @@ Java_com_example_dominigames_1testassignment_MainActivity_initLoader(
     Loader::get().Init(AAssetManager_fromJava(env, assetManager));
 }
 
-extern "C" JNIEXPORT jstring JNICALL
+JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_SceneLoadFromFile(
+        JNIEnv* env, jobject /* this */, jstring filename) {
+    const char* path = env->GetStringUTFChars(filename, nullptr);
+    Scene::Scene::get().LoadScene(path);
+    env->ReleaseStringUTFChars(filename, path);
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_SceneUpdate(
+        JNIEnv* env, jobject /* this */) {
+    Scene::Scene::get().Update();
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_SceneDraw(
+        JNIEnv* env, jobject /* this */) {
+    Scene::Scene::get().Draw();
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_RendererBeginFrame(
+        JNIEnv* env, jobject /* this */) {
+    Renderer::Renderer::get().beginFrame();
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_RendererEndFrame(
+        JNIEnv* env, jobject /* this */) {
+    Renderer::Renderer::get().endFrame();
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_RendererSetViewport(
+        JNIEnv* env, jobject /* this */, jint width, jint height) {
+    Renderer::Renderer::get().setViewport(width, height);
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_onPointerStart(
+        JNIEnv* env, jobject /* this */, jint id, jfloat x, jfloat y) {
+    Input::Input::get().onPointerDown(id, x, y);
+    LOGI("PointerStart id=%d x=%f y=%f", id, x, y);
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_onPointerMove(
+        JNIEnv* env, jobject /* this */, jint id, jfloat x, jfloat y) {
+    Input::Input::get().onPointerMove(id, x, y);
+    LOGI("PointerMove id=%d x=%f y=%f", id, x, y);
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_dominigames_1testassignment_MainActivity_onPointerEnd(
+        JNIEnv* env, jobject /* this */, jint id) {
+    Input::Input::get().onPointerUp(id);
+    LOGI("PointerEnd id=%d", id);
+}
+
+JNIEXPORT jstring JNICALL
 Java_com_example_dominigames_1testassignment_MainActivity_stringFromJNI(
         JNIEnv* env, jobject /* this */) {
     std::string hello = "Hello from C++";
     return env->NewStringUTF(hello.c_str());
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_dominigames_1testassignment_MainActivity_onPointerStart(
-        JNIEnv* env, jobject thiz, jint id, jfloat x, jfloat y) {
-    Input::Input::get().onPointerDown(id, x, y);
-    LOGI("PointerStart id=%d x=%f y=%f", id, x, y);
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_dominigames_1testassignment_MainActivity_onPointerMove(
-        JNIEnv* env, jobject thiz, jint id, jfloat x, jfloat y) {
-    Input::Input::get().onPointerMove(id, x, y);
-    LOGI("PointerMove id=%d x=%f y=%f", id, x, y);
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_dominigames_1testassignment_MainActivity_onPointerEnd(
-        JNIEnv* env, jobject thiz, jint id) {
-    Input::Input::get().onPointerUp(id);
-    LOGI("PointerEnd id=%d", id);
-}
-
-[[maybe_unused]] void android_main(struct android_app* app) {
-    app->onAppCmd = [](struct android_app* app, int32_t cmd) {
-        switch (cmd) {
-            case APP_CMD_INIT_WINDOW:
-                if (app->window) {
-                    Renderer::Renderer::get().createContext(reinterpret_cast<void*>(app->window));
-                    Loader::get().Init(app->activity->assetManager); // AAssetManager из android_app
-                    Scene::Scene::get().LoadScene("cube_scene.ini");
-                }
-                break;
-
-            case APP_CMD_TERM_WINDOW:
-                Renderer::Renderer::get().destroyContext();
-                break;
-        }
-    };
-
-    int events;
-    struct android_poll_source* source;
-
-    while (true) {
-        while (ALooper_pollOnce(0, nullptr, &events, (void**)&source) >= 0) {
-            if (source) source->process(app, source);
-            if (app->destroyRequested) return;
-        }
-
-        Renderer::Renderer::get().beginFrame();
-        Scene::Scene::get().Update();
-        Scene::Scene::get().Draw();
-        Renderer::Renderer::get().endFrame();
-    }
-}
+} // extern "C"

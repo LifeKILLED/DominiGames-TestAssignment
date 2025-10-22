@@ -1,35 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="com.example.dominigames_testassignment">
+
+    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.DominiGamesTestAssignment">
+        android:theme="@style/Theme.DominiGamesTestAssignment"
+        android:supportsRtl="true">
 
         <activity
-            android:name="android.app.NativeActivity"
-            android:label="@string/app_name"
+            android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTask"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="landscape">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="dominigames_testassignment" />
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <!-- Наш класс оставляем, но не как LAUNCHER -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            tools:ignore="Instantiatable" />
     </application>
-
 </manifest>

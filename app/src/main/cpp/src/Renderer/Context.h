@@ -11,6 +11,8 @@ namespace Renderer {
             virtual void endFrame() = 0;
             virtual void terminate() = 0;
 
+            virtual void setViewport(int width, int height) = 0;
+
             virtual void onPause() = 0;
             virtual void onResume(void* windowData) = 0;
 

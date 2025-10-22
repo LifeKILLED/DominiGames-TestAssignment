@@ -36,6 +36,13 @@ namespace Renderer {
         }
     }
 
+    void Renderer::setViewport(int width, int height)
+    {
+        if (m_context && m_context->isInitialized()) {
+            m_context->setViewport(width, height);
+        }
+    }
+
     void Renderer::createContext(void* window) {
         if (!m_context)
             m_context = std::make_unique<CONTEXT_TYPE>();

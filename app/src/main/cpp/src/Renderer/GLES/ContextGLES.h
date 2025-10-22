@@ -18,6 +18,8 @@ namespace Renderer {
         void endFrame() override;
         void terminate() override;
 
+        void setViewport(int width, int height) override;
+
         void onPause() override;
         void onResume(void* windowData) override;
 
