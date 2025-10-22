@@ -18,11 +18,11 @@ namespace Scene
 
         void SetPosition(const glm::vec3& pos) { m_position = pos; MarkDirty(); }
         void SetRotation(const glm::vec3& rot) { m_rotation = rot; MarkDirty(); }
-        void SetScale(const glm::vec3& scl) { m_rotation = scl; MarkDirty(); }
+        void SetScale(const glm::vec3& scl) { m_scale = scl; MarkDirty(); }
 
         const glm::vec3& GetPosition() { return m_position; }
         const glm::vec3& GetRotation() { return m_rotation; }
-        const glm::vec3& GetScale() { return m_rotation; }
+        const glm::vec3& GetScale() { return m_scale; }
 
         const glm::mat4& GetWorldMatrix() const { UpdateWorldMatrix(); return m_worldMatrix; }
         const glm::mat4& GetLocalMatrix() const { UpdateLocalMatrix(); return m_localMatrix; }
