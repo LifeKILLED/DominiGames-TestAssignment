@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <map>
 #include <string>
 #include <glm/glm.hpp>
 
@@ -28,11 +29,13 @@ namespace Scene
         void Update();
         void Draw();
 
+        void PrintHierarchy();
+
     protected:
         Scene();
 
     private:
-        void ParseEntity(std::stringstream& ss);
+        void ParseEntity(const std::map<std::string, std::string>& data);
 
     private:
         EntityPtr m_root;

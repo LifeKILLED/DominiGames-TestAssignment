@@ -8,6 +8,8 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Mesh.h"
+#include "Input/Input.h"
+#include "Util/IniUtils.h"
 
 #include <sstream>
 #include <algorithm>
@@ -20,6 +22,22 @@ namespace {
         std::stringstream ss(line);
         ss >> v.x >> v.y >> v.z;
         return v;
+    }
+
+    void PrintEntityTreeRecursive(const Scene::EntityPtr& entity, const std::string& prefix = "", bool isLast = true) {
+        if (!entity)
+            return;
+
+        std::cout << prefix;
+        std::cout << (isLast ? "└── " : "├── ");
+        std::cout << entity->GetName() << "\n";
+
+        auto children = entity->GetChildren();
+        for (size_t i = 0; i < children.size(); ++i)
+        {
+            bool lastChild = (i == children.size() - 1);
+            PrintEntityTreeRecursive(children[i], prefix + (isLast ? "    " : "│   "), lastChild);
+        }
     }
 }
 
@@ -63,7 +81,17 @@ namespace Scene
 
     void Scene::Update()
     {
-        // TODO
+        PrintHierarchy();
+
+        auto camera = m_camera.lock();
+        if (!camera)
+            return;
+
+        auto rotation = camera->GetTransform()->GetRotation();
+        auto offset = Input::Input::get().getPointerDelta(0);
+        rotation.x += offset.second;
+        rotation.z += offset.first;
+        camera->GetTransform()->SetRotation(rotation);
     }
 
     void Scene::Draw()
@@ -84,52 +112,39 @@ namespace Scene
             return false;
         }
 
-        std::stringstream ss(content);
-        while (ss) {
-            std::string line;
-            std::getline(ss, line);
-            if (line.empty() || line[0] == '#') continue;
+        auto iniData = IniUtils::LoadIniFromString(content);
 
-            if (line.find("[Entity]") != std::string::npos) {
-                ParseEntity(ss);
-            }
+        for (const auto& [section, kv] : iniData) {
+            ParseEntity(kv);
         }
 
         return true;
     }
 
-    void Scene::ParseEntity(std::stringstream& ss) {
-        std::string line;
-        std::string name;
+    void Scene::ParseEntity(const std::map<std::string, std::string>& data) {
+        std::string name = data.at("name");
         glm::vec3 position(0.0f);
         glm::vec3 rotation(0.0f);
         glm::vec3 scale(1.0f);
         std::string modelFile;
-        std::string shaderFile = "basic"; // default shader name
+        std::string shaderFile = "basic";
         bool isCamera = false;
         std::string parentName;
 
-        while (std::getline(ss, line)) {
-            if (line.empty() || line[0] == '#') continue;
-            if (line[0] == '[') break;
-
-            auto pos = line.find('=');
-            if (pos == std::string::npos) continue;
-
-            std::string key = line.substr(0, pos);
-            std::string value = line.substr(pos + 1);
-            key.erase(std::remove_if(key.begin(), key.end(), ::isspace), key.end());
-            value.erase(std::remove_if(value.begin(), value.end(), ::isspace), value.end());
-
-            if (key == "name") name = value;
-            else if (key == "position") position = ParseVec3(value);
-            else if (key == "rotation") rotation = ParseVec3(value);
-            else if (key == "scale") scale = ParseVec3(value);
-            else if (key == "model") modelFile = value;
-            else if (key == "shader") shaderFile = value;
-            else if (key == "isCamera") isCamera = (value == "1" || value == "true");
-            else if (key == "parent") parentName = value;
-        }
+        if (auto it = data.find("position"); it != data.end())
+            position = ParseVec3(it->second);
+        if (auto it = data.find("rotation"); it != data.end())
+            rotation = ParseVec3(it->second);
+        if (auto it = data.find("scale"); it != data.end())
+            scale = ParseVec3(it->second);
+        if (auto it = data.find("model"); it != data.end())
+            modelFile = it->second;
+        if (auto it = data.find("shader"); it != data.end())
+            shaderFile = it->second;
+        if (auto it = data.find("isCamera"); it != data.end())
+            isCamera = (it->second == "1" || it->second == "true");
+        if (auto it = data.find("parent"); it != data.end())
+            parentName = it->second;
 
         auto entity = CreateEntity(name, FindEntity(parentName));
         entity->GetTransform()->SetPosition(position);
@@ -162,5 +177,11 @@ namespace Scene
 
     void Scene::SetCamera(EntityPtr entity) {
         m_camera = entity;
+    }
+
+    void Scene::PrintHierarchy()
+    {
+        std::cout << "Scene Hierarchy:\n";
+        PrintEntityTreeRecursive(m_root, "", true);
     }
 }

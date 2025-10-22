@@ -22,16 +22,15 @@ namespace Input {
             return instance;
         }
 
-        void startPointer(int id, float x, float y);
-        void updatePointer(int id, float x, float y);
-        void endPointer(int id);
+        void onPointerDown(int id, float x, float y);
+        void onPointerMove(int id, float x, float y);
+        void onPointerUp(int id);
 
         bool isPointerDown(int id);
         bool isPointerUp(int id);
         bool isPointer(int id);
         std::pair<float, float> getPointerPosition(int id);
         std::pair<float, float> getPointerDelta(int id);
-        void resetPointerDelta(int id);
 
     private:
         Input() = default;

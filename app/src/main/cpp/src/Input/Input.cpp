@@ -2,12 +2,12 @@
 
 namespace Input {
 
-    void Input::startPointer(int id, float x, float y) {
+    void Input::onPointerDown(int id, float x, float y) {
         std::lock_guard<std::mutex> lock(m_mutex);
         m_pointers[id] = {x, y, 0.0f, 0.0f, true, false, false};
     }
 
-    void Input::updatePointer(int id, float x, float y) {
+    void Input::onPointerMove(int id, float x, float y) {
         std::lock_guard<std::mutex> lock(m_mutex);
         auto it = m_pointers.find(id);
         if (it != m_pointers.end()) {
@@ -21,7 +21,7 @@ namespace Input {
         }
     }
 
-    void Input::endPointer(int id) {
+    void Input::onPointerUp(int id) {
         std::lock_guard<std::mutex> lock(m_mutex);
         auto it = m_pointers.find(id);
         if (it != m_pointers.end()) {

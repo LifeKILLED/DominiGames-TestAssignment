@@ -29,21 +29,21 @@ Java_com_example_dominigames_1testassignment_MainActivity_stringFromJNI(
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_dominigames_1testassignment_MainActivity_onPointerStart(
         JNIEnv* env, jobject thiz, jint id, jfloat x, jfloat y) {
-    Input::Input::get().startPointer(id, x, y);
+    Input::Input::get().onPointerDown(id, x, y);
     LOGI("PointerStart id=%d x=%f y=%f", id, x, y);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_dominigames_1testassignment_MainActivity_onPointerMove(
         JNIEnv* env, jobject thiz, jint id, jfloat x, jfloat y) {
-    Input::Input::get().updatePointer(id, x, y);
+    Input::Input::get().onPointerMove(id, x, y);
     LOGI("PointerMove id=%d x=%f y=%f", id, x, y);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_dominigames_1testassignment_MainActivity_onPointerEnd(
         JNIEnv* env, jobject thiz, jint id) {
-    Input::Input::get().endPointer(id);
+    Input::Input::get().onPointerUp(id);
     LOGI("PointerEnd id=%d", id);
 }
 
